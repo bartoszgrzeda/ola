@@ -1,18 +1,14 @@
-﻿using Api.DbContexts;
-using Api.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Api.Entities;
 
 namespace Api.Repositories;
 
 public class ActivityRepository
 {
-    private readonly ActivityDbContext _dbContext;
-    private readonly DbSet<Activity> _activities;
+    private readonly List<Activity> _activities;
 
-    public ActivityRepository(ActivityDbContext dbContext)
+    public ActivityRepository()
     {
-        _dbContext = dbContext;
-        _activities = dbContext.Set<Activity>();
+        _activities = new List<Activity>();
     }
 
     public void Add(Activity activity)
@@ -22,7 +18,8 @@ public class ActivityRepository
 
     public void Update(Activity activity)
     {
-        _activities.Update(activity);
+        var existingActivity = _activities.RemoveAll(x => x.Id == activity.Id);
+        _activities.Add(activity);
     }
 
     public void Delete(Activity activity)
@@ -32,16 +29,16 @@ public class ActivityRepository
 
     public Task<Activity?> GetById(Guid id)
     {
-        return _activities.SingleOrDefaultAsync(x => x.Id == id);
+        return Task.FromResult(_activities.SingleOrDefault(x => x.Id == id));
     }
 
     public Task<List<Activity>> GetAll()
     {
-        return _activities.ToListAsync();
+        return Task.FromResult(_activities);
     }
 
     public Task Save()
     {
-        return _dbContext.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 }

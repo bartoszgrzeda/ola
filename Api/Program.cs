@@ -12,8 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<ActivityService>();
-builder.Services.AddTransient<ActivityRepository>();
-builder.Services.AddDbContext<ActivityDbContext>();
+builder.Services.AddSingleton<ActivityRepository>();
 
 var app = builder.Build();
 
