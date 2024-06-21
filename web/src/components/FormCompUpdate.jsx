@@ -19,18 +19,18 @@ export default function FormCompUpdate(props) {
       priority,
     };
 
-    await fetch("https://localhost:32768/Activity/${props.id}", {
+    await fetch(`https://localhost:32770/Activity/${props.id}`, {
       method: "put",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(title, description, dueDate, priority),
+      body: JSON.stringify( updatedActivity ),
     })
       .then((res) => {
         if (res.ok) {
           console.log("Activity updated successfully!");
           setMessage("Updated!");
-          props.updateActivity(updatedActivity);
+          props.refresh();
           props.setShowUpdate(true);
         } else {
           console.log("Error updating activity");
@@ -75,7 +75,7 @@ export default function FormCompUpdate(props) {
           />
           <select
             value={priority}
-            onChange={(e) => setPriority(e.target.value)}
+            onChange={(e) => setPriority(+e.target.value)}
             required
           >
             <option value={1}>Low</option>

@@ -1,7 +1,7 @@
 import { getTodayDate } from "../../functions/getTodayDate";
 import { useState } from "react";
 
-export default function FormComp({ activities, addActivity }) {
+export default function FormComp({refresh}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState(getTodayDate());
@@ -9,20 +9,10 @@ export default function FormComp({ activities, addActivity }) {
   const [message, setMessage] = useState("");
   const [showMsg, setShowMsg] = useState(false);
 
-  const handleAddActivity = () => {
-    const newActivity = {
-      title: title,
-      description: description,
-      dueDate: dueDate,
-      priority: priority,
-    };
-    addActivity(newActivity);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await fetch("https://localhost:32768/Activity", {
+    await fetch("https://localhost:32770/Activity", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +23,7 @@ export default function FormComp({ activities, addActivity }) {
         if (res.ok) {
           console.log("Activity added successfully!");
           setMessage("Saved!");
-          handleAddActivity();
+          refresh();
         } else {
           console.log("Error adding activity");
           setMessage("Ops! Something went wrong!");
@@ -42,7 +32,7 @@ export default function FormComp({ activities, addActivity }) {
       .catch((error) => {
         console.log(error);
         setMessage("Ops! Something went wrong!");
-        handleAddActivity();
+        refresh();
       });
 
     setShowMsg(true);
@@ -87,7 +77,7 @@ export default function FormComp({ activities, addActivity }) {
             />
             <select
               value={priority}
-              onChange={(e) => setPriority(e.target.value)}
+              onChange={(e) => setPriority(+e.target.value)}
               required
             >
               <option value={1}>Low</option>

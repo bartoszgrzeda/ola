@@ -7,14 +7,16 @@ export default function Activity(props) {
   const handleDelete = (e) => {
     e.preventDefault();
 
-    fetch(`https://localhost:32768/Activity/${props.id}`, {
+    fetch(`https://localhost:32770/Activity/${props.id}`, {
       method: "DELETE",
     })
       .then((res) => {
         if (res.ok) {
           console.log(`Activity with id ${props.id} deleted successfully.`);
+          props.refresh();
         } else {
           console.log("Error deleting activity");
+          props.refresh();
         }
       })
       .catch((error) => {
@@ -43,6 +45,7 @@ export default function Activity(props) {
             priority={props.priority}
             updateActivity={props.updateActivity}
             setShowUpdate={setShowUpdate}
+            refresh={props.refresh}
           />
         </div>
       )}

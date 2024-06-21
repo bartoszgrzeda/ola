@@ -8,8 +8,27 @@ function App() {
   const [activities, setActivities] = useState([]);
   const [showUpdate, setShowUpdate] = useState(true);
 
-  const addActivity = (newActivity) => {
-    setActivities([...activities, newActivity]);
+  const refresh = () => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://localhost:32770/Activity", {
+          method: "get",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setActivities(data);
+        } else {
+          console.log("Error fetching activities");
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    };
+
+    fetchData();
   };
 
   const updateActivity = (updatedActivity) => {
@@ -23,7 +42,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://localhost:32768/Activity", {
+        const response = await fetch("https://localhost:32770/Activity", {
           method: "get",
           headers: {
             "Content-Type": "application/json",
@@ -52,14 +71,14 @@ function App() {
         description={activity.description}
         dueDate={activity.dueDate}
         priority={activity.priority}
-        updateActivity={updateActivity}
+        refresh={refresh}
       />
     );
   });
 
   return (
     <>
-      <FormComp activities={activities} addActivity={addActivity} />
+      <FormComp refresh = { refresh } />
       <div className="container">
         <h1>Activities</h1>
         <div className="wrapper">{activityElements}</div>
